@@ -1,11 +1,11 @@
 import sys
 import ply.lex as lex
 
-tokens = ['DOTPLUS','DOTMINUS','DOTTIMES','DOTDIVIDE', 'PLUSASSIGNMENT',
-          'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT','LESSEQUAL',
-          'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INTNUM', 'ID']
+tokens = ['DOTPLUS', 'DOTMINUS', 'DOTTIMES', 'DOTDIVIDE', 'PLUSASSIGNMENT',
+          'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT', 'LESSEQUAL',
+          'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INT', 'ID']
 
-literals = ['+', '-', '*', '/', '(', ')', '=', ';', '[', ']', '{', '}', ':', '<', '>', ',', '\'']
+literals = ['+', '-', '*', '/', '(', ')', '=', ';', '[', ']', '{', '}', ':', '<', '>', ',', '\'', '"']
 
 t_DOTPLUS = r'\.\+'
 t_DOTMINUS = r'\.-'
@@ -21,14 +21,17 @@ t_UNEQUAL = r'!='
 t_EQUAL = r'=='
 
 reserved = {
-   'if' : 'IF',
-   'else' : 'ELSE',
-   'for' : 'FOR',
-   'while' : 'WHILE',
-   'print' : 'PRINT',
-   'eye' : 'EYE',
-   'zeros' : 'ZEROS',
-   'ones' : 'ONES'
+    'if': 'IF',
+    'else': 'ELSE',
+    'for': 'FOR',
+    'while': 'WHILE',
+    'print': 'PRINT',
+    'eye': 'EYE',
+    'zeros': 'ZEROS',
+    'ones': 'ONES',
+    'break': 'BREAK',
+    'continue': 'CONTINUE',
+    'return': 'RETURN'
 }
 
 tokens.extend(reserved.values())
@@ -36,7 +39,7 @@ tokens.extend(reserved.values())
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value, 'ID')    # check for reserved words
+    t.type = reserved.get(t.value, 'ID')  # check for reserved words
     return t
 
 
@@ -46,7 +49,7 @@ def t_FLOAT(t):
     return t
 
 
-def t_INTNUM(t):
+def t_INT(t):
     r'\d+'
     t.value = int(t.value)
     return t
@@ -71,17 +74,18 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-if __name__ == '__main__':
-    try:
-        filename = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
-        file = open(filename, "r")
-    except IOError:
-        print("Cannot open {0} file".format(filename))
-        sys.exit(0)
-
-    text = file.read()
-    lexer = lex.lex()
-
-    lexer.input(text)
-    for token in lexer:
-        print("line %d: %s(%s)" % (token.lineno, token.type, token.value))
+# if __name__ == '__main__':
+#     try:
+#         filename = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
+#         file = open(filename, "r")
+#     except IOError:
+#         print("Cannot open {0} file".format(filename))
+#         sys.exit(0)
+#
+#     text = file.read()
+#     lexer = lex.lex()
+#
+#     lexer.input(text)
+#     for token in lexer:
+#         print("line %d: %s(%s)" % (token.lineno, token.type, token.value))
+lexer = lex.lex()

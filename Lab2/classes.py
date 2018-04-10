@@ -26,6 +26,7 @@ class Program(Node):
     def __init__(self, instructions_opt):
         self.instructions_opt = instructions_opt
 
+
 class BinExpr(Node):
     def __init__(self, op, left, right):
         self.op = op
@@ -43,13 +44,16 @@ class Instructions(Node):
     def __init__(self):
         self.instructions = []
 
+
 class InstructionsOpt(Node):
     def __init__(self, instructions):
         self.instructions = instructions
 
+
 class InstructionBlock(Node):
     def __init__(self, instructions):
         self.instructions = instructions
+
 
 class IfElseInstruction(Node):
     def __init__(self, cond, instruction, else_):
@@ -93,7 +97,6 @@ class ReturnInstruction(Node):
 class PrintInstruction(Node):
     def __init__(self, to_print):
         self.to_print = to_print
-
 
 
 class EyeInit(Node):

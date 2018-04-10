@@ -2,11 +2,7 @@
 
 N = 10;
 M = 20;
-for i = 1:N {
-    for j = i:M {
-        print i, j;
-    }
-}
+
 
 if(N==10)
     print "N==10";
@@ -44,4 +40,17 @@ for i = 1:N {
         continue;
 }
 
+
+
+
+
+
+
+
+
+for i = 1:N {
+    for j = i:M {
+        print i, j;
+    }
+}
 

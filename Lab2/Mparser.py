@@ -41,7 +41,7 @@ def p_instructions_opt_2(p):
 
 def p_instructions_1(p):
     """instructions : instructions instruction
-                      | instruction"""
+                     | instruction"""
     # TODO
 
 
@@ -49,7 +49,7 @@ def p_instructions_2(p):
     """instructions : instruction """
 
 
-def p_instruction(self, p):
+def p_instruction(p):
     """instruction : if_else_instruction
                     | while_instruction
                     | for_instruction
@@ -94,11 +94,11 @@ def p_print_instruction(p):
     p[0] = classes.PrintInstruction(p[2])
 
 def p_instruction_block(p):
-    """instruction_block: """
+    """instruction_block : """
     # TODO
 
 def p_assignment(p):
-    """assignment: """
+    """assignment : """
     # TODO
 
 def p_expression(p):
@@ -109,15 +109,15 @@ def p_print_expressions(p):
     """print_expressions : """
     # TODO
 
-def p_eye(self, p):
+def p_eye(p):
     """eye : EYE '(' INT ')' """
     p[0] = classes.EyeInit(p[3])
 
-def p_ones(self, p):
+def p_ones(p):
     """ones : ONES '(' INT ')' """
     p[0] = classes.OnesInit(p[3])
 
-def p_zeros(self, p):
+def p_zeros(p):
     """zeros : ZEROS '(' INT ')' """
     p[0] = classes.ZerosInit(p[3])
 

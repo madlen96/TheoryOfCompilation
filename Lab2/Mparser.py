@@ -55,15 +55,11 @@ def p_instruction(p):
 
 def p_if_else_instruction(p):
     """if_else_instruction : IF '(' expression_to_bool ')' instructions
-                            | IF '(' expression_to_bool ')' instructions ELSE instructions
-                            | IF '(' expression_to_bool ')' instructions else_if_instructions ELSE instructions
-                            | IF '(' expression_to_bool ')' instructions else_if_instructions"""
-    # TODO
-
-
-def p_else_if_instructions(p):
-    """else_if_instructions : else_if_instructions ELSE IF '(' expression_to_bool ')' instructions
-                            | ELSE IF '(' expression_to_bool ')' instructions"""
+                            | IF '(' expression_to_bool ')' instructions ELSE instructions"""
+    if len(p) == 6:
+        p[0] = classes.IfElseInstruction(p[3], p[5])
+    elif len(p) == 8:
+        p[0] = classes.IfElseInstruction(p[3], p[5], p[7])
 
 
 def p_while_instruction(p):
@@ -95,7 +91,8 @@ def p_continue_instruction(p):
 
 
 def p_return_instruction(p):
-    """return_instruction : RETURN expression ';' """
+    """return_instruction : RETURN expression ';'
+                        | RETURN array_expression ';' """
     p[0] = classes.ReturnInstruction(p[2])
 
 
@@ -106,7 +103,7 @@ def p_print_instruction(p):
 
 def p_instruction_block(p):
     """instruction_block : '{' instructions '}' """
-    # TODO
+    p[0] = classes.InstructionBlock(p[1])
 
 
 def p_assignment_char(p):
@@ -115,6 +112,7 @@ def p_assignment_char(p):
                         | MINUSASSIGNMENT
                         | TIMESASSIGNMENT
                         | DIVIDEASSIGNMENT """
+    p[0] = p[1]
 
 
 def p_assignment(p):
@@ -122,29 +120,42 @@ def p_assignment(p):
                     | ID '=' ones
                     | ID '=' eye
                     | ID assignment_char expression ';'
-                    | ID assignment_char '-' expression ';'
-                    | ID '[' values_int ']' assignment_char expression ';'
+                    | ID assignment_char array_expression ';'
+                    | array assignment_char expression ';'
                     | ID '=' '[' rows ']' ';' """
-    # TODO
+    if len(p) == 4:
+        p[0] = classes.Assignment(p[1], p[2], p[3])
+    elif len(p) == 7:
+        p[0] = classes.Assignment(p[1], p[2], classes.Array(p[4]))
+    elif len(p) == 8:
+        p[0] = classes.Assignment(p[1], p[2], p[3])
 
 
 def p_rows(p):
     """rows : values ';' rows
             | values"""
+    if len(p) == 2:
+        p[0] = classes.Values([p[1]])
+    else:
+        p[0] = classes.Values([p[1]].append(p[3]))
 
 
 def p_values(p):
-    """values : values ',' INT
-            | values ',' FLOAT
-            | values ',' ID
-            | INT
-            | FLOAT
-            | ID """
+    """values : values ',' expression
+            | expression """
+    if len(p) == 2:
+        p[0] = classes.Values([p[1]])
+    else:
+        p[0] = classes.Values([p[1]] + [p[3]])
 
 
 def p_values_int(p):
     """values_int : values_int ',' INT
             | INT """
+    if len(p) == 2:
+        p[0] = classes.Values([p[1]])
+    else:
+        p[0] = classes.Values([p[1]] + [p[3]])
 
 
 def p_expression_to_bool(p):
@@ -154,29 +165,63 @@ def p_expression_to_bool(p):
                         | expression UNEQUAL expression
                         | expression LESSEQUAL expression
                         | expression GREATEREQUAL expression"""
+    p[0] = classes.BinExpr(p[2], p[1], [3])
 
 
 def p_expression(p):
-    """expression : ID
-                | FLOAT
-                | INT
-                | ID '[' values_int ']'
+    """expression : array
                 | ID "'"
+                | '-' expression
                 | expression '+' expression
                 | expression '-' expression
                 | expression '*' expression
-                | expression '/' expression
-                | ID DOTPLUS ID
-                | ID DOTMINUS ID
-                | ID DOTTIMES ID
-                | ID DOTDIVIDE ID """
-    # TODO
+                | expression '/' expression"""
+    if len(p) == 3:
+        if p[1] == '-':
+            p[0] = classes.UnExpr(p[2], p[1])
+        else:
+            p[0] = classes.UnExpr(p[1], p[2])
+    elif len(p) == 4:
+        p[0] = classes.BinExpr(p[2], p[1], [3])
+    elif len(p) == 2:
+        p[0] = p[1]
+
+
+def p_array_expression(p):
+    """array_expression : ID DOTPLUS ID
+                    | ID DOTMINUS ID
+                    | ID DOTTIMES ID
+                    | ID DOTDIVIDE ID """
+    p[0] = classes.BinExpr(p[2], p[1], [3])
+
+
+def p_array(p):
+    """array : ID '[' values_int ']'"""
+    p[0] = classes.ValueArray(p[1], p[3])
+
+
+def p_id_expression(p):
+    """expression : ID"""
+    p[0] = classes.Variable(p[1])
+
+
+def p_int_expression(p):
+    """expression : INT"""
+    p[0] = classes.IntNum(p[1])
+
+
+def p_float_expression(p):
+    """expression : FLOAT"""
+    p[0] = classes.FloatNum(p[1])
 
 
 def p_print_expressions(p):
     """print_expressions : values
                         | '"' expression_to_bool '"' """
-    # TODO
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[2]
 
 
 def p_eye(p):

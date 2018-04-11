@@ -22,6 +22,22 @@ class Variable(Node):
         self.name = name
 
 
+class ValueArray(Node):
+    def __init__(self, name, index):
+        self.name = name
+        self.index = index
+
+
+class Values(Node):
+    def __init__(self, values):
+        self.values = [] + [values]
+
+
+class Array(Node):
+    def __init__(self, row):
+        self.values = [].append(row)
+
+
 class Program(Node):
     def __init__(self, instructions_opt):
         self.instructions_opt = instructions_opt
@@ -35,7 +51,8 @@ class BinExpr(Node):
 
 
 class Assignment(Node):
-    def __init__(self, name, expr):
+    def __init__(self, op, name, expr):
+        self.op = op
         self.name = name
         self.expr = expr
 
@@ -56,7 +73,7 @@ class InstructionBlock(Node):
 
 
 class IfElseInstruction(Node):
-    def __init__(self, cond, instruction, else_):
+    def __init__(self, cond, instruction, else_=-1):
         self.cond = cond
         self.instruction = instruction
         self.else_ = else_

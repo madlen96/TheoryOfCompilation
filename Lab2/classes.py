@@ -2,11 +2,6 @@ class Node(object):
     pass
 
 
-class Const(Node):
-    def __init__(self, value):
-        self.value = value
-
-
 class IntNum(Node):
     def __init__(self, value):
         self.value = value
@@ -22,9 +17,26 @@ class Variable(Node):
         self.name = name
 
 
+class ValueArray(Node):
+    def __init__(self, name, index):
+        self.name = name
+        self.index = index
+
+
+class Values(Node):
+    def __init__(self, values):
+        self.values = [] + [values]
+
+
+class Array(Node):
+    def __init__(self, row):
+        self.values = [].append(row)
+
+
 class Program(Node):
     def __init__(self, instructions_opt):
         self.instructions_opt = instructions_opt
+
 
 class BinExpr(Node):
     def __init__(self, op, left, right):
@@ -34,7 +46,8 @@ class BinExpr(Node):
 
 
 class Assignment(Node):
-    def __init__(self, name, expr):
+    def __init__(self, op, name, expr):
+        self.op = op
         self.name = name
         self.expr = expr
 
@@ -43,16 +56,19 @@ class Instructions(Node):
     def __init__(self):
         self.instructions = []
 
+
 class InstructionsOpt(Node):
     def __init__(self, instructions):
         self.instructions = instructions
+
 
 class InstructionBlock(Node):
     def __init__(self, instructions):
         self.instructions = instructions
 
+
 class IfElseInstruction(Node):
-    def __init__(self, cond, instruction, else_):
+    def __init__(self, cond, instruction, else_=None):
         self.cond = cond
         self.instruction = instruction
         self.else_ = else_
@@ -71,10 +87,10 @@ class ForInstruction(Node):
 
 
 class Range(Node):
-    def __init__(self, variable, from_, to_):
+    def __init__(self, variable, from_, to):
         self.variable = variable
         self.from_ = from_
-        self.to_ = to_
+        self.to = to
 
 
 class BreakInstruction(Node):
@@ -93,7 +109,6 @@ class ReturnInstruction(Node):
 class PrintInstruction(Node):
     def __init__(self, to_print):
         self.to_print = to_print
-
 
 
 class EyeInit(Node):

@@ -221,8 +221,8 @@ def p_string_expression(p):
 
 def p_print_expressions(p):
     """print_expressions : values 
-						| expression
-                        | '"' expression_to_bool '"' """
+		| expression 
+		| '"' expression_to_bool '"' """
     if len(p) == 2:
         p[0] = p[1]
     else:

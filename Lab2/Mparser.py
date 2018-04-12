@@ -213,16 +213,17 @@ def p_int_expression(p):
 def p_float_expression(p):
     """expression : FLOAT"""
     p[0] = classes.FloatNum(p[1])
-	
+
+
 def p_string_expression(p):
     """expression : STRING"""
     p[0] = classes.String(p[1])
 
 
 def p_print_expressions(p):
-    """print_expressions : values 
-		| expression 
-		| '"' expression_to_bool '"' """
+    """print_expressions : values
+    | expression
+    | '"' expression_to_bool '"' """
     if len(p) == 2:
         p[0] = p[1]
     else:

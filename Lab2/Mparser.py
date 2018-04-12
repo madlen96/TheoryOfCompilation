@@ -7,7 +7,7 @@ import ply.yacc as yacc
 tokens = scanner.tokens + scanner.literals
 
 precedence = (
-    ("nonassoc", 'IF'),
+    ("nonassoc", 'IFX'),
     ("nonassoc", 'ELSE'),
     ("right", '=', 'PLUSASSIGNMENT', 'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT'),
     ('nonassoc', '<', '>', 'EQUAL', 'UNEQUAL', 'LESSEQUAL', 'GREATEREQUAL'),  # Nonassociative operators
@@ -30,9 +30,13 @@ def p_program(p):
     p[0] = classes.Program(p[1])
 
 
-def p_instructions_opt(p):
+def p_instructions_opt_1(p):
     """instructions_opt : instructions """
     p[0] = classes.InstructionsOpt(p[1])
+
+
+def p_instructions_opt_2(p):
+    """instructions_opt : """
 
 
 def p_instructions(p):
@@ -49,12 +53,13 @@ def p_instruction(p):
                     | continue_instruction
                     | return_instruction
                     | print_instruction
-                    | assignment """
+                    | assignment
+                    | expression ';'"""
     p[0] = p[1]
 
 
 def p_if_else_instruction(p):
-    """if_else_instruction : IF '(' expression_to_bool ')' instructions
+    """if_else_instruction : IF '(' expression_to_bool ')' instructions %prec IFX
                             | IF '(' expression_to_bool ')' instructions ELSE instructions"""
     if len(p) == 6:
         p[0] = classes.IfElseInstruction(p[3], p[5])
@@ -91,8 +96,7 @@ def p_continue_instruction(p):
 
 
 def p_return_instruction(p):
-    """return_instruction : RETURN expression ';'
-                        | RETURN array_expression ';' """
+    """return_instruction : RETURN expression ';' """
     p[0] = classes.ReturnInstruction(p[2])
 
 
@@ -106,8 +110,8 @@ def p_instruction_block(p):
     p[0] = classes.InstructionBlock(p[1])
 
 
-def p_assignment_char(p):
-    """assignment_char : '='
+def p_assignment_op(p):
+    """assignment_op : '='
                         | PLUSASSIGNMENT
                         | MINUSASSIGNMENT
                         | TIMESASSIGNMENT
@@ -115,13 +119,10 @@ def p_assignment_char(p):
     p[0] = p[1]
 
 
+# zeros,ones,eye  jako expression tylko ID ???   lvalue
 def p_assignment(p):
-    """assignment : ID '=' zeros
-                    | ID '=' ones
-                    | ID '=' eye
-                    | ID assignment_char expression ';'
-                    | ID assignment_char array_expression ';'
-                    | array assignment_char expression ';'
+    """assignment : ID assignment_op expression ';'
+                    | array assignment_op expression ';'
                     | ID '=' '[' rows ']' ';' """
     if len(p) == 4:
         p[0] = classes.Assignment(p[1], p[2], p[3])
@@ -149,13 +150,15 @@ def p_values(p):
         p[0] = classes.Values([p[1]] + [p[3]])
 
 
-def p_values_int(p):
-    """values_int : values_int ',' INT
-            | INT """
-    if len(p) == 2:
-        p[0] = classes.Values([p[1]])
-    else:
-        p[0] = classes.Values([p[1]] + [p[3]])
+# szczegolny przypadek, ten wyzej powinien juz wszystko obejmowac (ogolnie)
+
+# def p_values_int(p):
+#     """values_int : values_int ',' INT
+#             | INT """
+#     if len(p) == 2:
+#         p[0] = classes.Values([p[1]])
+#     else:
+#         p[0] = classes.Values([p[1]] + [p[3]])
 
 
 def p_expression_to_bool(p):
@@ -187,8 +190,11 @@ def p_expression(p):
         p[0] = p[1]
 
 
+# nie mamy pewnosci ze ID to macierze o tych samych wymiarach
+
+
 def p_array_expression(p):
-    """array_expression : ID DOTPLUS ID
+    """expression : ID DOTPLUS ID
                     | ID DOTMINUS ID
                     | ID DOTTIMES ID
                     | ID DOTDIVIDE ID """
@@ -196,7 +202,7 @@ def p_array_expression(p):
 
 
 def p_array(p):
-    """array : ID '[' values_int ']'"""
+    """array : ID '[' values ']'"""
     p[0] = classes.ValueArray(p[1], p[3])
 
 
@@ -215,33 +221,29 @@ def p_float_expression(p):
     p[0] = classes.FloatNum(p[1])
 
 
-def p_string_expression(p):
-    """expression : STRING"""
-    p[0] = classes.String(p[1])
+# def p_string_expression(p):
+#     """expression : STRING"""
+#     p[0] = classes.String(p[1])
 
 
 def p_print_expressions(p):
     """print_expressions : values
-                        | expression
-                        | '"' expression_to_bool '"' """
-    if len(p) == 2:
-        p[0] = p[1]
-    else:
-        p[0] = p[2]
+                        | STRING """
+    p[0] = p[1]
 
 
 def p_eye(p):
-    """eye : EYE '(' INT ')' ';' """
+    """expression : EYE '(' INT ')' """
     p[0] = classes.EyeInit(p[3])
 
 
 def p_ones(p):
-    """ones : ONES '(' INT ')' ';' """
+    """expression : ONES '(' INT ')' """
     p[0] = classes.OnesInit(p[3])
 
 
 def p_zeros(p):
-    """zeros : ZEROS '(' INT ')' ';' """
+    """expression : ZEROS '(' INT ')' """
     p[0] = classes.ZerosInit(p[3])
 
 

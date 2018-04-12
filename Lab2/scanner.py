@@ -3,7 +3,7 @@ import ply.lex as lex
 
 tokens = ['DOTPLUS', 'DOTMINUS', 'DOTTIMES', 'DOTDIVIDE', 'PLUSASSIGNMENT',
           'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT', 'LESSEQUAL',
-          'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INT', 'ID','STRING']
+          'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INT', 'ID', 'STRING']
 
 literals = ['+', '-', '*', '/', '(', ')', '=', ';', '[', ']', '{', '}', ':', '<', '>', ',', '\'', '"']
 
@@ -35,6 +35,11 @@ reserved = {
 }
 
 tokens.extend(reserved.values())
+
+
+def t_STRING(t):
+    r'\".+\"'
+    return t
 
 
 def t_ID(t):

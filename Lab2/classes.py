@@ -2,11 +2,6 @@ class Node(object):
     pass
 
 
-class String(Node):
-    def __init__(self, expression):
-        self.expression = expression
-
-
 class IntNum(Node):
     def __init__(self, value):
         self.value = value
@@ -73,7 +68,7 @@ class InstructionBlock(Node):
 
 
 class IfElseInstruction(Node):
-    def __init__(self, cond, instruction, else_=-1):
+    def __init__(self, cond, instruction, else_=None):
         self.cond = cond
         self.instruction = instruction
         self.else_ = else_
@@ -92,10 +87,10 @@ class ForInstruction(Node):
 
 
 class Range(Node):
-    def __init__(self, variable, from_, to_):
+    def __init__(self, variable, from_, to):
         self.variable = variable
         self.from_ = from_
-        self.to_ = to_
+        self.to = to
 
 
 class BreakInstruction(Node):

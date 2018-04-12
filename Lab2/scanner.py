@@ -3,7 +3,7 @@ import ply.lex as lex
 
 tokens = ['DOTPLUS', 'DOTMINUS', 'DOTTIMES', 'DOTDIVIDE', 'PLUSASSIGNMENT',
           'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT', 'LESSEQUAL',
-          'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INT', 'ID']
+          'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INT', 'ID','STRING']
 
 literals = ['+', '-', '*', '/', '(', ')', '=', ';', '[', ']', '{', '}', ':', '<', '>', ',', '\'', '"']
 

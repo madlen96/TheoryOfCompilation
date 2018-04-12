@@ -2,9 +2,9 @@ class Node(object):
     pass
 
 
-class Const(Node):
-    def __init__(self, value):
-        self.value = value
+class String(Node):
+    def __init__(self, expression):
+        self.expression = expression
 
 
 class IntNum(Node):

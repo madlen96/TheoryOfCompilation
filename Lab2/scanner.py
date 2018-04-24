@@ -79,18 +79,4 @@ def t_error(t):
     t.lexer.skip(1)
 
 
-# if __name__ == '__main__':
-#     try:
-#         filename = sys.argv[1] if len(sys.argv) > 1 else "example.txt"
-#         file = open(filename, "r")
-#     except IOError:
-#         print("Cannot open {0} file".format(filename))
-#         sys.exit(0)
-#
-#     text = file.read()
-#     lexer = lex.lex()
-#
-#     lexer.input(text)
-#     for token in lexer:
-#         print("line %d: %s(%s)" % (token.lineno, token.type, token.value))
 lexer = lex.lex()

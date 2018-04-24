@@ -2,6 +2,11 @@ class Node(object):
     pass
 
 
+class Const(Node):
+    def __init__(self, value):
+        self.value = value
+
+
 class IntNum(Node):
     def __init__(self, value):
         self.value = value
@@ -23,14 +28,19 @@ class ValueArray(Node):
         self.index = index
 
 
+class Rows(Node):
+    def __init__(self):
+        self.values = []
+
+
 class Values(Node):
-    def __init__(self, values):
-        self.values = [] + [values]
+    def __init__(self):
+        self.values = []
 
 
 class Array(Node):
     def __init__(self, row):
-        self.values = [].append(row)
+        self.values = row
 
 
 class Program(Node):
@@ -49,6 +59,20 @@ class Assignment(Node):
     def __init__(self, op, name, expr):
         self.op = op
         self.name = name
+        self.expr = expr
+
+
+class AssignmentWithArray(Node):
+    def __init__(self, op, array, expr):
+        self.op = op
+        self.array = array
+        self.expr = expr
+
+
+class AssignmentWithRows(Node):
+    def __init__(self, op, id, expr):
+        self.op = op
+        self.id = id
         self.expr = expr
 
 
@@ -118,15 +142,21 @@ class EyeInit(Node):
 
 class OnesInit(Node):
     def __init__(self, expression):
-        self.expression = expression
+        self.size = expression
 
 
 class ZerosInit(Node):
     def __init__(self, expression):
-        self.expression = expression
+        self.size = expression
 
 
 class UnExpr(Node):
     def __init__(self, expression, operator):
         self.expression = expression
         self.operator = operator
+
+
+class Error(Node):
+    def __init__(self):
+        pass
+

@@ -113,7 +113,7 @@ def p_print_instruction(p):
 
 def p_instruction_block(p):
     """instruction_block : '{' instructions '}' """
-    p[0] = AST.InstructionBlock(p[1])
+    p[0] = AST.InstructionBlock(p[2])
 
 
 def p_assignment_op(p):

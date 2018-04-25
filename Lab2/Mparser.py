@@ -79,16 +79,21 @@ def p_while_instruction(p):
 
 
 def p_for_instruction(p):
-    """for_instruction : FOR range instruction_block"""
-    p[0] = AST.ForInstruction(p[2], p[3])
+    """for_instruction : FOR ID '=' range instruction_block"""
+    p[0] = AST.ForInstruction(p[2], p[4], p[5])
+
+#
+# def p_range(p):
+#     """range : ID '=' INT ':' INT
+#             | ID '=' INT ':' ID
+#             | ID '=' ID ':' INT
+#             | ID '=' ID ':' ID"""
+#     p[0] = AST.Range(p[1], p[3], p[5])
 
 
 def p_range(p):
-    """range : ID '=' INT ':' INT
-            | ID '=' INT ':' ID
-            | ID '=' ID ':' INT
-            | ID '=' ID ':' ID"""
-    p[0] = AST.Range(p[1], p[3], p[5])
+    """range : expression ':' expression"""
+    p[0] = AST.Range(p[1], p[3])
 
 
 def p_break_instruction(p):
@@ -141,6 +146,11 @@ def p_assignment(p):
 def p_id_expression(p):
     """expression : ID"""
     p[0] = AST.Variable(p[1])
+
+
+def p_string_expression(p):
+    """expression : STRING"""
+    p[0] = AST.String(p[1])
 
 
 def p_int_expression(p):
@@ -199,7 +209,7 @@ def p_expression_to_bool(p):
 
 def p_expression(p):
     """expression : array
-                | ID "'"
+                | expression TRANSPOSE
                 | '-' expression
                 | expression '+' expression
                 | expression '-' expression
@@ -208,7 +218,7 @@ def p_expression(p):
     if len(p) == 3:
         if p[1] == '-':
             p[0] = AST.UnExpr(p[2], p[1])
-        else:
+        elif p[2] == '\'':
             p[0] = AST.UnExpr(p[1], p[2])
     elif len(p) == 4:
         p[0] = AST.BinExpr(p[2], p[1], p[3])

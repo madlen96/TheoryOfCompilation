@@ -7,6 +7,11 @@ class Const(Node):
         self.value = value
 
 
+class String(Node):
+    def __init__(self, value):
+        self.value = value
+
+
 class IntNum(Node):
     def __init__(self, value):
         self.value = value
@@ -105,14 +110,14 @@ class WhileInstruction(Node):
 
 
 class ForInstruction(Node):
-    def __init__(self, range, instruction_block):
+    def __init__(self, variable, range, instruction_block):
+        self.variable = variable
         self.range = range
         self.instruction_block = instruction_block
 
 
 class Range(Node):
-    def __init__(self, variable, from_, to):
-        self.variable = variable
+    def __init__(self, from_, to):
         self.from_ = from_
         self.to = to
 

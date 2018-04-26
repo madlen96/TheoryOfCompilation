@@ -75,7 +75,7 @@ class TreePrinter:
 
     @addToClass(AST.BinExpr)
     def printTree(self, indent=0):
-        result = indent * separator + self.op + "\n"
+        result =  indent * separator + self.op + "\n"
         result += self.left.printTree(indent + 1)
         result += self.right.printTree(indent + 1)
         return result
@@ -138,6 +138,7 @@ class TreePrinter:
     def printTree(self, indent=0):
         result = ""
         result += indent * separator + "FOR" + "\n"
+        result += (indent + 1) * separator + self.variable + "\n"
         result += self.range.printTree(indent + 1)
         result += self.instruction_block.printTree(indent + 1)
         return result

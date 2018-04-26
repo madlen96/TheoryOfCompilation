@@ -35,7 +35,7 @@ class TreePrinter:
 
     @addToClass(AST.String)
     def printTree(self, indent=0):
-        return indent * separator + str(self.name) + "\n"
+        return indent * separator + str(self.value) + "\n"
 
     @addToClass(AST.ValueArray)
     def printTree(self, indent=0):
@@ -145,8 +145,8 @@ class TreePrinter:
     @addToClass(AST.Range)
     def printTree(self, indent=0):
         result = indent * separator + "RANGE\n"
-        result += (indent + 1) * separator + str(self.from_) + "\n"
-        result += (indent + 1) * separator + str(self.to) + "\n"
+        result += self.from_.printTree(indent+1)
+        result += self.to.printTree(indent+1)
         return result
 
     @addToClass(AST.BreakInstruction)

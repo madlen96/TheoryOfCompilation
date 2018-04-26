@@ -204,7 +204,7 @@ def p_expression_to_bool(p):
                         | expression UNEQUAL expression
                         | expression LESSEQUAL expression
                         | expression GREATEREQUAL expression"""
-    p[0] = AST.BinExpr(p[2], p[1], [3])
+    p[0] = AST.BinExpr(p[2], p[1], p[3])
 
 
 def p_expression(p):
@@ -230,11 +230,11 @@ def p_expression(p):
 
 
 def p_array_expression(p):
-    """expression : ID DOTPLUS ID
-                    | ID DOTMINUS ID
-                    | ID DOTTIMES ID
-                    | ID DOTDIVIDE ID """
-    p[0] = AST.BinExpr(p[2], p[1], [3])
+    """expression : expression DOTPLUS expression
+                    | expression DOTMINUS expression
+                    | expression DOTTIMES expression
+                    | expression DOTDIVIDE expression """
+    p[0] = AST.BinExpr(p[2], p[1], p[3])
 
 
 def p_array(p):

@@ -5,7 +5,7 @@ tokens = ['DOTPLUS', 'DOTMINUS', 'DOTTIMES', 'DOTDIVIDE', 'PLUSASSIGNMENT',
           'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT', 'LESSEQUAL',
           'GREATEREQUAL', 'UNEQUAL', 'EQUAL', 'FLOAT', 'INT', 'ID', 'STRING', 'TRANSPOSE']
 
-literals = ['+', '-', '*', '/', '(', ')', '=', ';', '[', ']', '{', '}', ':', '<', '>', ',', '\'', '"']
+literals = ['+', '-', '*', '/', '(', ')', '=', ';', '[', ']', '{', '}', ':', '<', '>', ',']
 
 t_DOTPLUS = r'\.\+'
 t_DOTMINUS = r'\.-'

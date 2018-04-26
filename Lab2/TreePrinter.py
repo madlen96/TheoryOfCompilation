@@ -59,7 +59,6 @@ class TreePrinter:
             result += i.printTree(indent + 2)
         return result
 
-    # czy to jest potrzebne
     @addToClass(AST.Array)
     def printTree(self, indent=0):
         result = indent * separator + "MATRIX\n"
@@ -90,7 +89,7 @@ class TreePrinter:
     @addToClass(AST.AssignmentWithArray)
     def printTree(self, indent=0):
         result = indent * separator + self.op + "\n"
-        result += self.array.printTree(indent + 1) + "\n"
+        result += self.array.printTree(indent + 1)
         result += self.expr.printTree(indent + 1)
         return result
 
@@ -168,7 +167,6 @@ class TreePrinter:
         result = indent * separator + "PRINT\n"
         result += self.to_print.printTree(indent + 1)
         return result
-        # TODO fill in the body
 
     @addToClass(AST.EyeInit)
     def printTree(self, indent=0):
@@ -190,7 +188,10 @@ class TreePrinter:
 
     @addToClass(AST.UnExpr)
     def printTree(self, indent=0):
-        result = indent * separator + self.operator + '\n'
+        if self.operator == "'":
+            result = indent * separator + "TRANSPOSE" + '\n'
+        else:
+            result = indent * separator + self.operator + '\n'
         result += self.expression.printTree(indent + 1)
         return result
 

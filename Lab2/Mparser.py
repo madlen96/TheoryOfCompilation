@@ -12,10 +12,11 @@ precedence = (
     ("nonassoc", 'ELSE'),
     ("right", '=', 'PLUSASSIGNMENT', 'MINUSASSIGNMENT', 'TIMESASSIGNMENT', 'DIVIDEASSIGNMENT'),
     ('nonassoc', '<', '>', 'EQUAL', 'UNEQUAL', 'LESSEQUAL', 'GREATEREQUAL'),  # Nonassociative operators
-    ("left", '+', '-'),
-    ("left", '*', '/'),
     ('left', 'DOTPLUS', 'DOTMINUS'),
     ('left', 'DOTTIMES', 'DOTDIVIDE'),
+    ("left", '+', '-'),
+    ("left", '*', '/'),
+    ("right", 'TRANSPOSE')
 )
 
 
@@ -82,14 +83,6 @@ def p_for_instruction(p):
     """for_instruction : FOR ID '=' range instruction_block"""
     p[0] = AST.ForInstruction(p[2], p[4], p[5])
 
-#
-# def p_range(p):
-#     """range : ID '=' INT ':' INT
-#             | ID '=' INT ':' ID
-#             | ID '=' ID ':' INT
-#             | ID '=' ID ':' ID"""
-#     p[0] = AST.Range(p[1], p[3], p[5])
-
 
 def p_range(p):
     """range : expression ':' expression"""
@@ -130,7 +123,6 @@ def p_assignment_op(p):
     p[0] = p[1]
 
 
-# zeros,ones,eye  jako expression tylko ID ???   lvalue
 def p_assignment(p):
     """assignment : ID assignment_op expression ';'
                     | ID '[' values ']' assignment_op expression ';'
@@ -185,18 +177,6 @@ def p_values(p):
         p[0] = p[1]
 
 
-
-# szczegolny przypadek, ten wyzej powinien juz wszystko obejmowac (ogolnie)
-
-# def p_values_int(p):
-#     """values_int : values_int ',' INT
-#             | INT """
-#     if len(p) == 2:
-#         p[0] = classes.Values([p[1]])
-#     else:
-#         p[0] = classes.Values([p[1]] + [p[3]])
-
-
 def p_expression_to_bool(p):
     """expression_to_bool : expression '<' expression
                         | expression '>' expression
@@ -226,9 +206,6 @@ def p_expression(p):
         p[0] = p[1]
 
 
-# nie mamy pewnosci ze ID to macierze o tych samych wymiarach
-
-
 def p_array_expression(p):
     """expression : expression DOTPLUS expression
                     | expression DOTMINUS expression
@@ -240,11 +217,6 @@ def p_array_expression(p):
 def p_array(p):
     """array : ID '[' values ']'"""
     p[0] = AST.ValueArray(p[1], p[3])
-
-
-# def p_string_expression(p):
-#     """expression : STRING"""
-#     p[0] = classes.String(p[1])
 
 
 def p_print_expressions(p):

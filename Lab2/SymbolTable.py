@@ -17,7 +17,7 @@ class SymbolTable(object):
         if name not in self.symbols:
             self.symbols[name] = symbol
         else:
-            raise ValueError
+            return None # zamiast ValueError ktory sie pojawia jak robimy put czegos co istnieje
 
     def get(self, name):  # get variable symbol or fundef from <name> entry
         if name in self.symbols.keys():
@@ -29,6 +29,16 @@ class SymbolTable(object):
 
     def getParentScope(self):
         return self.parentScope
+
+    def getGlobal(self, name):
+        s = self.get(name)
+        if s is None:
+            if self.parentScope is not None:
+                return self.parentScope.getGlobal(name)
+            else:
+                return None
+        else:
+            return s
 
     def pushScope(self, name):
         new_scope = SymbolTable(self, name)

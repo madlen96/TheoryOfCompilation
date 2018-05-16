@@ -47,12 +47,11 @@ class TypeChecker(NodeVisitor):
         type2 = self.visit(node.right)  # type2 = node.right.accept(self)
         op = node.op
         if type1 is None or type2 is None:
-            print('Undeclare variable in line')
+            print "Undeclare variable in line:{0}".format(node.line)
         else:
             op_type = types_dict[(op, type1, type2)]
             if op_type is None:
-                print('Invalid types in binary expression in line: ')
-
+                print "Invalid types in binary expression in line:{0}".format(node.line)
             return op_type
         return None
 
@@ -69,9 +68,14 @@ class TypeChecker(NodeVisitor):
         return 'string'
 
     def visit_Variable(self, node):
-        # TODO nie wiem czy to ma byc tak?
-        self.table.put(node.name, None)
-        return None
+        # TODO nie wiem czy to ma byc tak? -->zmienilam, ale tez nie wiem czy to ok
+        # self.table.put(node.name, None)
+        # return None
+        var = self.table.getGlobal(node.name)
+        if var is None:
+            print "Undefined symbol {0} in line {1}.".format(node.name, node.line)
+        else:
+            return None# TODO chociaz chyba powinno sie zwrocic typ tej zmiennej
 
     def visit_Program(self, node):
         if node.instructions_opt is not None:
@@ -80,15 +84,15 @@ class TypeChecker(NodeVisitor):
     def visit_ValueArray(self, node):
         # TODO w mapie z macierzami?
         if self.table.get(node.name) is None:
-            print('Variable is undeclare in line ')
+            print "Variable is undeclare in line {0}".format(node.line)
         elif len(self.visit(node.index)) == len(self.table.get(node.name)):
-            print('Incorrect index in line ')
+            print "Incorrect index in line {0}".format(node.line)
         else:
             values = self.visit(node.index)
             size_matrix = self.table.get(node.name)
             for value, size in zip(values, size_matrix):
                 if value < 0 or value > size:
-                    print('Index out of range in line ')
+                    print "Index out of range in line {0}".format(node.line)
 
     def visit_Rows(self, node):
         count_rows = 0
@@ -107,17 +111,29 @@ class TypeChecker(NodeVisitor):
 
     def visit_Array(self, node):
         self.visit(node.values)
-    #     TODO czy tu powinnam zwracac typ ktory przechowuje w tablicy czy w tablicy moga byc wogle rozne typy?
+    #     TODO czy tu powinnam zwracac typ ktory przechowuje w tablicy czy w tablicy moga byc wogle rozne typy? -->
+    #     TODO chyba nie mamy nigdzie uwzglenionego, ze nie moga
 
     def visit_Assignment(self, node):
         if node.op != '=':
             if self.table.get(node.name) is None:
-                print('Undeclare variable in line ')
+                print "Undeclare variable in line {0}".format(node.line)
         else:
             if self.table.get(node.name) is None:
                 self.table.put(node.name, self.visit(node.expr))
             # else:
             #     print('This variable is already initialize in line ')
+
+
+#### cos pozmienialam, ale nie wiem
+    # def visit_Assignment(self, node):
+    #     name = self.table.getGlobal(node.name)
+    #     if node.op != '=':
+    #         if name is None:
+    #             print "Undefined symbol: {0} at line {1}".format(node.name, node.lineno)
+    #     else:
+    #         if self.table.getGlobal(node.name) is None:
+    #             self.table.put(node.name, self.visit(node.expr))
 
     def visit_AssignmentWithArray(self, node):
         self.visit(node.array)
@@ -129,7 +145,7 @@ class TypeChecker(NodeVisitor):
             size = self.visit(node.expr)
             self.table.put(node.id, size)
         else:
-            print('This variable is already initialize in line ')
+            print "This variable is already initialized in line {0}".format(node.line)
 
     def visit_Instructions(self, node):
         for instruction in node.instructions:
@@ -142,39 +158,50 @@ class TypeChecker(NodeVisitor):
         self.visit(node.instructions)
 
     def visit_IfElseInstruction(self, node):
-        # TODO czy trzeba sprawdzac tez warunek?
+        # TODO czy trzeba sprawdzac tez warunek? --> chyba tak
+        type = self.visit(node.cond)
+        if type != 'int':
+            print "Incorrect condition type in IF ELSE instr in line {0}".format(node.line)
         self.visit(node.instruction)
         if node.else_ is not None:
             self.visit(node.else_)
 
     def visit_WhileInstruction(self, node):
-        # TODO czy trzeba sprawdzac tez warunek?
+        # TODO czy trzeba sprawdzac tez warunek? --> chyba tak,powinien sprowadzac sie do inta
         self.visit(node.instr)
+        type = self.visit(node.cond)
+        if type != 'int':
+            print "Incorrect condition type in while instr in line {0}".format(node.line)
+        self.table = self.table.pushScope('while')
+        self.visit(node.instr)
+        self.table = self.table.popScope()
 
     def visit_ForInstruction(self, node):
         self.visit(node.range)
+        self.table = self.table.pushScope('for')
         self.visit(node.instruction_block)
+        self.table = self.table.popScope()
 
     def visit_Range(self, node):
-        # TODO czy moze byc cos innego niz int?
+        # TODO czy moze byc cos innego niz int? --> raczej nie
         from_ = self.visit(node.from_)
         to = self.visit(node.to)
         if from_ != 'int' or to != 'int':
-            print('Not int in range instruction in line ')
+            print "Not int in range instruction in line in line {0}".format(node.line)
 
     def visit_BreakInstruction(self, node):
         tab = self.table
         while tab is not None and tab.name != 'while' and tab.name != 'for':
             tab = tab.parentScope
         if tab is None:
-            print('Break instruction not in a loop in line ')
+            print "Break instruction not in a loop in line {0}".format(node.line)
 
     def visit_ContinueInstruction(self, node):
         tab = self.table
         while tab is not None and tab.name != 'while' and tab.name != 'for':
             tab = tab.parentScope
         if tab is None:
-            print('Continue instruction not in a loop in line ')
+            print "Continue instruction not in a loop in line {0}".format(node.line)
 
     def visit_ReturnInstruction(self, node):
         pass

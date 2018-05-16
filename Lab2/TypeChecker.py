@@ -52,7 +52,6 @@ class TypeChecker(NodeVisitor):
         return op_type
 
     def visit_Const(self, node):
-        # TODO
         pass
 
     def visit_IntNum(self, node):
@@ -65,40 +64,67 @@ class TypeChecker(NodeVisitor):
         return 'string'
 
     def visit_Variable(self, node):
-        # TODO
-        pass
+        # TODO nie wiem czy to ma byc tak?
+        self.table.put(node.name, None)
+        return node.name
 
     def visit_Program(self, node):
         if node.instructions_opt is not None:
             self.visit(node.instructions_opt)
 
     def visit_ValueArray(self, node):
-        # TODO
-        pass
+        # TODO w mapie z macierzami?
+        if self.table.get(node.name) is None:
+            print('Variable is undeclare in line ')
+        elif len(self.visit(node.index)) == len(self.table.get(node.name)):
+            print('Incorrect index in line ')
+        else:
+            values = self.visit(node.index)
+            size_matrix = self.table.get(node.name)
+            for value, size in zip(values, size_matrix):
+                if value < 0 or value > size:
+                    print('Index out of range in line ')
 
     def visit_Rows(self, node):
-        # TODO
-        pass
+        count_rows = 0
+        count_elem_in_row = 0
+        for row in node.values:
+            count_rows += 1
+            if count_elem_in_row == 0:
+                count_elem_in_row = self.visit(row)
+            elif len(self.visit(row)) != count_elem_in_row:
+                print('Diffrent size')
+                # TODO fix name
+        return count_rows, count_elem_in_row
 
     def visit_Values(self, node):
-        # TODO
-        pass
+        return node.values
 
     def visit_Array(self, node):
-        # TODO
-        pass
+        self.visit(node.values)
+    #     TODO czy tu powinnam zwracac typ ktory przechowuje w tablicy czy w tablicy moga byc wogle rozne typy?
 
     def visit_Assignment(self, node):
-        # TODO
-        pass
+        if node.op != '=':
+            if self.table.get(node.name) is None:
+                print('Undeclare variable in line ')
+        else:
+            if self.table.get(node.name) is None:
+                self.table.put(node.name, self.visit(node.expr))
+            else:
+                print('This variable is already initialize in line ')
 
     def visit_AssignmentWithArray(self, node):
-        # TODO
-        pass
+        self.visit(node.array)
+        self.visit(node.expr)
 
     def visit_AssignmentWithRows(self, node):
-        # TODO
-        pass
+        if self.table.get(node.name) is None:
+            #     TODO dodawac do innej mapy?
+            size = self.visit(node.expr)
+            self.table.put(node.id, size)
+        else:
+            print('This variable is already initialize in line ')
 
     def visit_Instructions(self, node):
         for instruction in node.instructions:
@@ -125,7 +151,7 @@ class TypeChecker(NodeVisitor):
         self.visit(node.instruction_block)
 
     def visit_Range(self, node):
-        # TODO czy trzeba sprawdzac czy to jest tylko int?
+        # TODO czy moze byc cos innego niz int?
         from_ = self.visit(node.from_)
         to = self.visit(node.to)
         if from_ != 'int' or to != 'int':

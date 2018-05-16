@@ -46,10 +46,15 @@ class TypeChecker(NodeVisitor):
         type1 = self.visit(node.left)  # type1 = node.left.accept(self)
         type2 = self.visit(node.right)  # type2 = node.right.accept(self)
         op = node.op
-        op_type = types_dict[(op, type1, type2)]
-        if op_type is None:
-            print('Invalid types in binary expression in line: ')
-        return op_type
+        if type1 is None or type2 is None:
+            print('Undeclare variable in line')
+        else:
+            op_type = types_dict[(op, type1, type2)]
+            if op_type is None:
+                print('Invalid types in binary expression in line: ')
+
+            return op_type
+        return None
 
     def visit_Const(self, node):
         pass
@@ -66,7 +71,7 @@ class TypeChecker(NodeVisitor):
     def visit_Variable(self, node):
         # TODO nie wiem czy to ma byc tak?
         self.table.put(node.name, None)
-        return node.name
+        return None
 
     def visit_Program(self, node):
         if node.instructions_opt is not None:
@@ -111,8 +116,8 @@ class TypeChecker(NodeVisitor):
         else:
             if self.table.get(node.name) is None:
                 self.table.put(node.name, self.visit(node.expr))
-            else:
-                print('This variable is already initialize in line ')
+            # else:
+            #     print('This variable is already initialize in line ')
 
     def visit_AssignmentWithArray(self, node):
         self.visit(node.array)
@@ -193,5 +198,4 @@ class TypeChecker(NodeVisitor):
             print('Incorrect argument type in zeros function in line: ')
 
     def visit_UnExpr(self, node):
-        # TODO
-        pass
+        self.visit(node.expression)

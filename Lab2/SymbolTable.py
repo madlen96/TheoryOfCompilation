@@ -22,7 +22,7 @@ class SymbolTable(object):
     def get(self, name):  # get variable symbol or fundef from <name> entry
         if name in self.symbols.keys():
             return self.symbols[name]
-        elif self.parentScope.name is None:
+        elif self.parentScope is None:
             return None
         else:
             return self.getParentScope().get(name)

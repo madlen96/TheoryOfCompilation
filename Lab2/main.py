@@ -20,6 +20,6 @@ if __name__ == '__main__':
     result = ast.printTree()
     print(result)
 
-    typeChecker = TypeChecker()
-    typeChecker.visit(ast)
+    typeChecker = TypeChecker.TypeChecker()
+   # typeChecker.visit(ast)
 

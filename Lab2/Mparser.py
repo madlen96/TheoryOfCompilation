@@ -123,6 +123,7 @@ def p_assignment_op(p):
     p[0] = p[1]
 
 
+# do poprawy
 def p_assignment(p):
     """assignment : ID assignment_op expression ';'
                     | ID '[' values ']' assignment_op expression ';'

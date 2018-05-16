@@ -6,6 +6,7 @@ class VariableSymbol(object):
         self.name = name
         self.type = type
 
+
 class SymbolTable(object):
     def __init__(self, parent, name):  # parent scope and symbol table name
         self.parentScope = parent
@@ -24,7 +25,7 @@ class SymbolTable(object):
         elif self.parentScope.name is None:
             return None
         else:
-            return self.parent.get(name)
+            return self.getParentScope().get(name)
 
     def getParentScope(self):
         return self.parentScope

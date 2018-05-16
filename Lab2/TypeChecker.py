@@ -2,7 +2,6 @@
 import AST
 import SymbolTable
 
-
 types_dict = dict()
 
 for op in ['+', '-', '/', '*']:
@@ -10,6 +9,7 @@ for op in ['+', '-', '/', '*']:
     types_dict[(op, 'float', 'int')] = 'float'
     types_dict[(op, 'int', 'int')] = 'int'
     types_dict[(op, 'int', 'float')] = 'float'
+
 
 class NodeVisitor(object):
     def visit(self, node):
@@ -51,6 +51,10 @@ class TypeChecker(NodeVisitor):
             print('Invalid types in binary expression in line: ')
         return op_type
 
+    def visit_Const(self, node):
+        # TODO
+        pass
+
     def visit_IntNum(self, node):
         return 'int'
 
@@ -60,53 +64,72 @@ class TypeChecker(NodeVisitor):
     def visit_String(self, node):
         return 'string'
 
+    def visit_Variable(self, node):
+        # TODO
+        pass
+
     def visit_Program(self, node):
         if node.instructions_opt is not None:
             self.visit(node.instructions_opt)
 
     def visit_ValueArray(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_Rows(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_Values(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_Array(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_Assignment(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_AssignmentWithArray(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_AssignmentWithRows(self, node):
-        #TODO
+        # TODO
         pass
 
     def visit_Instructions(self, node):
         for instruction in node.instructions:
             self.visit(instruction)
 
+    def visit_InstructionsOpt(self, node):
+        self.visit(node.instructions)
+
+    def visit_InstructionBlock(self, node):
+        self.visit(node.instructions)
+
     def visit_IfElseInstruction(self, node):
-        #TODO
-        pass
+        # TODO czy trzeba sprawdzac tez warunek?
+        self.visit(node.instruction)
+        if node.else_ is not None:
+            self.visit(node.else_)
 
     def visit_WhileInstruction(self, node):
-        #TODO
-        pass
+        # TODO czy trzeba sprawdzac tez warunek?
+        self.visit(node.instr)
 
     def visit_ForInstruction(self, node):
-        #TODO
-        pass
+        self.visit(node.range)
+        self.visit(node.instruction_block)
+
+    def visit_Range(self, node):
+        # TODO czy trzeba sprawdzac czy to jest tylko int?
+        from_ = self.visit(node.from_)
+        to = self.visit(node.to)
+        if from_ != 'int' or to != 'int':
+            print('Not int in range instruction in line ')
 
     def visit_BreakInstruction(self, node):
         tab = self.table
@@ -121,6 +144,12 @@ class TypeChecker(NodeVisitor):
             tab = tab.parentScope
         if tab is None:
             print('Continue instruction not in a loop in line ')
+
+    def visit_ReturnInstruction(self, node):
+        pass
+
+    def visit_PrintInstruction(self, node):
+        pass
 
     def visit_EyeInit(self, node):
         arg = self.visit(node.size)
@@ -137,3 +166,6 @@ class TypeChecker(NodeVisitor):
         if arg != 'int':
             print('Incorrect argument type in zeros function in line: ')
 
+    def visit_UnExpr(self, node):
+        # TODO
+        pass

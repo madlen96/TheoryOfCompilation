@@ -18,7 +18,7 @@ class SymbolTable(object):
         if name not in self.symbols:
             self.symbols[name] = symbol
         else:
-            return None # zamiast ValueError ktory sie pojawia jak robimy put czegos co istnieje
+            return None
 
     def get(self, name):  # get variable symbol or fundef from <name> entry
         if name in self.symbols.keys():

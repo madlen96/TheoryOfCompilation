@@ -47,7 +47,7 @@ class TypeChecker(NodeVisitor):
         type2 = self.visit(node.right)  # type2 = node.right.accept(self)
         op = node.op
         if type1 is None or type2 is None:
-            print "Undeclare variable in line: {0}".format(node.line)
+            print "Undeclared variable in line: {0}".format(node.line)
         elif types_dict.get((op, type1, type2)) is None:
             if type1 != type2:
                 print("Invalid types in binary expression in line: {0}".format(node.line))
@@ -83,7 +83,7 @@ class TypeChecker(NodeVisitor):
 
     def visit_ValueArray(self, node):
         if self.table.get(node.name) is None:
-            print "Variable is undeclare in line {0}".format(node.line)
+            print "Variable is undeclared in line {0}".format(node.line)
         elif len(self.visit(node.index)) == len(self.table.get(node.name)):
             print "Incorrect index in line {0}".format(node.line)
         else:
@@ -92,6 +92,7 @@ class TypeChecker(NodeVisitor):
             for value, size in zip(values, size_matrix):
                 if value < 0 or value > size:
                     print "Index out of range in line {0}".format(node.line)
+                    return
 
     def visit_Rows(self, node):
         count_rows = 0
@@ -113,10 +114,12 @@ class TypeChecker(NodeVisitor):
     def visit_Assignment(self, node):
         if node.op != '=':
             if self.table.get(node.name) is None:
-                print "Undeclare variable in line {0}".format(node.line)
+                print "Undeclared variable in line {0}".format(node.line)
         else:
             if self.table.get(node.name) is None:
                 self.table.put(node.name, self.visit(node.expr))
+            else:
+                self.table.symbols[node.name] = self.visit(node.expr)
 
     def visit_AssignmentWithArray(self, node):
         self.visit(node.array)

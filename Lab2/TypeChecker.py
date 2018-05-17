@@ -46,7 +46,6 @@ class TypeChecker(NodeVisitor):
         type1 = self.visit(node.left)  # type1 = node.left.accept(self)
         type2 = self.visit(node.right)  # type2 = node.right.accept(self)
         op = node.op
-        # print(str(type1) + str(op) + str(type2))
         if type1 is None or type2 is None:
             print "Undeclare variable in line: {0}".format(node.line)
         elif types_dict.get((op, type1, type2)) is None:
@@ -72,14 +71,10 @@ class TypeChecker(NodeVisitor):
         return 'string'
 
     def visit_Variable(self, node):
-        # TODO nie wiem czy to ma byc tak? -->zmienilam, ale tez nie wiem czy to ok
-        # self.table.put(node.name, None)
-        # return None
         var = self.table.getGlobal(node.name)
         if var is None:
             print "Undefined symbol {0} in line {1}.".format(node.name, node.line)
         else:
-            # return None# TODO chociaz chyba powinno sie zwrocic typ tej zmiennej
             return self.table.get(node.name)
 
     def visit_Program(self, node):
@@ -87,7 +82,6 @@ class TypeChecker(NodeVisitor):
             self.visit(node.instructions_opt)
 
     def visit_ValueArray(self, node):
-        # TODO w mapie z macierzami?
         if self.table.get(node.name) is None:
             print "Variable is undeclare in line {0}".format(node.line)
         elif len(self.visit(node.index)) == len(self.table.get(node.name)):
@@ -108,7 +102,6 @@ class TypeChecker(NodeVisitor):
                 count_elem_in_row = self.visit(row)
             elif len(self.visit(row)) != count_elem_in_row:
                 print("Different size in line {0}".format(node.line))
-                # TODO fix name
         return count_rows, count_elem_in_row
 
     def visit_Values(self, node):
@@ -116,8 +109,6 @@ class TypeChecker(NodeVisitor):
 
     def visit_Array(self, node):
         self.visit(node.values)
-    #     TODO czy tu powinnam zwracac typ ktory przechowuje w tablicy czy w tablicy moga byc wogle rozne typy? -->
-    #     TODO chyba nie mamy nigdzie uwzglenionego, ze nie moga
 
     def visit_Assignment(self, node):
         if node.op != '=':
@@ -126,19 +117,6 @@ class TypeChecker(NodeVisitor):
         else:
             if self.table.get(node.name) is None:
                 self.table.put(node.name, self.visit(node.expr))
-                # else:
-                #     print('This variable is already initialize in line ')
-
-
-            #### cos pozmienialam, ale nie wiem
-    # def visit_Assignment(self, node):
-    #     name = self.table.getGlobal(node.name)
-    #     if node.op != '=':
-    #         if name is None:
-    #             print "Undefined symbol: {0} at line {1}".format(node.name, node.lineno)
-    #     else:
-    #         if self.table.getGlobal(node.name) is None:
-    #             self.table.put(node.name, self.visit(node.expr))
 
     def visit_AssignmentWithArray(self, node):
         self.visit(node.array)
@@ -146,11 +124,8 @@ class TypeChecker(NodeVisitor):
 
     def visit_AssignmentWithRows(self, node):
         if self.table.get(node.id) is None:
-            #     TODO dodawac do innej mapy?
             size = self.visit(node.expr)
             self.table.put(node.id, size)
-        # else:
-            # print "This variable is already initialized in line {0}".format(node.line)
 
     def visit_Instructions(self, node):
         for instruction in node.instructions:
@@ -163,7 +138,6 @@ class TypeChecker(NodeVisitor):
         self.visit(node.instructions)
 
     def visit_IfElseInstruction(self, node):
-        # TODO czy trzeba sprawdzac tez warunek? --> chyba tak
         type = self.visit(node.cond)
         if type != 'int':
             print "Incorrect condition type in IF ELSE instr in line {0}".format(node.line)
@@ -172,7 +146,6 @@ class TypeChecker(NodeVisitor):
             self.visit(node.else_)
 
     def visit_WhileInstruction(self, node):
-        # TODO czy trzeba sprawdzac tez warunek? --> chyba tak,powinien sprowadzac sie do inta
         self.visit(node.instr)
         type = self.visit(node.cond)
         if type != 'int':
@@ -188,7 +161,6 @@ class TypeChecker(NodeVisitor):
         self.table = self.table.popScope()
 
     def visit_Range(self, node):
-        # TODO czy moze byc cos innego niz int? --> raczej nie
         from_ = self.visit(node.from_)
         to = self.visit(node.to)
         if from_ != 'int' or to != 'int':

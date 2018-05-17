@@ -8,10 +8,11 @@ class VariableSymbol(object):
 
 
 class SymbolTable(object):
-    def __init__(self, parent, name):  # parent scope and symbol table name
+    def __init__(self, parent, name, calledFunction):  # parent scope and symbol table name
         self.parentScope = parent
         self.name = name
         self.symbols = {}
+        self.calledFunction = calledFunction
 
     def put(self, name, symbol):  # put variable symbol or fundef under <name> entry
         if name not in self.symbols:

@@ -38,7 +38,7 @@ class NodeVisitor(object):
 
 class TypeChecker(NodeVisitor):
     def __init__(self):
-        self.table = SymbolTable.SymbolTable(None, "root")
+        self.table = SymbolTable.SymbolTable(None, "root", calledFunction=None)
 
     def visit_BinExpr(self, node):
         # alternative usage,
@@ -204,7 +204,8 @@ class TypeChecker(NodeVisitor):
             print "Continue instruction not in a loop in line {0}".format(node.line)
 
     def visit_ReturnInstruction(self, node):
-        pass
+        if self.table.calledFunction is None:
+            print "Return statement outside of function in line {0}".format(node.line)
 
     def visit_PrintInstruction(self, node):
         pass
@@ -225,4 +226,5 @@ class TypeChecker(NodeVisitor):
             print('Incorrect argument type in zeros function in line: ')
 
     def visit_UnExpr(self, node):
-        self.visit(node.expression)
+        val = self.visit(node.expression)
+        return val

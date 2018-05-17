@@ -202,7 +202,7 @@ def p_expression(p):
         elif p[2] == '\'':
             p[0] = AST.UnExpr(p[1], p[2], p.lineno(1))
     elif len(p) == 4:
-        p[0] = AST.BinExpr(p[2], p[1], p[3], p.lineno(1))
+        p[0] = AST.BinExpr(p[2], p[1], p[3], p.lineno(2))
     elif len(p) == 2:
         p[0] = p[1]
 
@@ -228,17 +228,17 @@ def p_print_expressions(p):
 
 def p_eye(p):
     """expression : EYE '(' INT ')' """
-    p[0] = AST.EyeInit(p[3], p.lineno(1))
+    p[0] = AST.EyeInit(AST.IntNum(p[3], p.lineno(1)), p.lineno(1))
 
 
 def p_ones(p):
     """expression : ONES '(' INT ')' """
-    p[0] = AST.OnesInit(p[3], p.lineno(1))
+    p[0] = AST.OnesInit(AST.IntNum(p[3], p.lineno(1)), p.lineno(1))
 
 
 def p_zeros(p):
     """expression : ZEROS '(' INT ')' """
-    p[0] = AST.ZerosInit(p[3], p.lineno(1))
+    p[0] = AST.ZerosInit(AST.IntNum(p[3], p.lineno(1)), p.lineno(1))
 
 
 parser = yacc.yacc()

@@ -46,8 +46,12 @@ class TypeChecker(NodeVisitor):
         type1 = self.visit(node.left)  # type1 = node.left.accept(self)
         type2 = self.visit(node.right)  # type2 = node.right.accept(self)
         op = node.op
+        # print(str(type1) + str(op) + str(type2))
         if type1 is None or type2 is None:
             print "Undeclare variable in line: {0}".format(node.line)
+        elif types_dict.get((op, type1, type2)) is None:
+            if type1 != type2:
+                print("Invalid types in binary expression in line: {0}".format(node.line))
         else:
             op_type = types_dict[(op, type1, type2)]
             if op_type is None:
@@ -75,7 +79,8 @@ class TypeChecker(NodeVisitor):
         if var is None:
             print "Undefined symbol {0} in line {1}.".format(node.name, node.line)
         else:
-            return None# TODO chociaz chyba powinno sie zwrocic typ tej zmiennej
+            # return None# TODO chociaz chyba powinno sie zwrocic typ tej zmiennej
+            return self.table.get(node.name)
 
     def visit_Program(self, node):
         if node.instructions_opt is not None:
@@ -121,11 +126,11 @@ class TypeChecker(NodeVisitor):
         else:
             if self.table.get(node.name) is None:
                 self.table.put(node.name, self.visit(node.expr))
-            # else:
-            #     print('This variable is already initialize in line ')
+                # else:
+                #     print('This variable is already initialize in line ')
 
 
-#### cos pozmienialam, ale nie wiem
+            #### cos pozmienialam, ale nie wiem
     # def visit_Assignment(self, node):
     #     name = self.table.getGlobal(node.name)
     #     if node.op != '=':
@@ -144,8 +149,8 @@ class TypeChecker(NodeVisitor):
             #     TODO dodawac do innej mapy?
             size = self.visit(node.expr)
             self.table.put(node.id, size)
-        else:
-            print "This variable is already initialized in line {0}".format(node.line)
+        # else:
+            # print "This variable is already initialized in line {0}".format(node.line)
 
     def visit_Instructions(self, node):
         for instruction in node.instructions:
@@ -213,17 +218,20 @@ class TypeChecker(NodeVisitor):
     def visit_EyeInit(self, node):
         arg = self.visit(node.size)
         if arg != 'int':
-            print('Incorrect argument type in eye function in line: ')
+            print("Incorrect argument type in eye function in line: {0}".format(node.line))
+        return node.size.value, node.size.value
 
     def visit_OnesInit(self, node):
         arg = self.visit(node.size)
         if arg != 'int':
-            print('Incorrect argument type in ones function in line: ')
+            print("Incorrect argument type in ones function in line: {0}".format(node.line))
+        return node.size.value, node.size.value
 
     def visit_ZerosInit(self, node):
         arg = self.visit(node.size)
         if arg != 'int':
-            print('Incorrect argument type in zeros function in line: ')
+            print("Incorrect argument type in zeros function in line: {0}".format(node.line))
+        return node.size.value, node.size.value
 
     def visit_UnExpr(self, node):
         val = self.visit(node.expression)

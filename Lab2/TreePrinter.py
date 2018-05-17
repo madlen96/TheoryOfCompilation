@@ -172,19 +172,19 @@ class TreePrinter:
     @addToClass(AST.EyeInit)
     def printTree(self, indent=0):
         result = indent * separator + "EYE\n"
-        result += (indent + 1) * separator + str(self.size) + "\n"
+        result += self.size.printTree(indent + 1)
         return result
 
     @addToClass(AST.OnesInit)
     def printTree(self, indent=0):
         result = indent * separator + "ONES\n"
-        result += (indent + 1) * separator + str(self.size) + "\n"
+        result += self.size.printTree(indent + 1)
         return result
 
     @addToClass(AST.ZerosInit)
     def printTree(self, indent=0):
         result = indent * separator + "ZEROS\n"
-        result += (indent + 1) * separator + str(self.size) + "\n"
+        result += self.size.printTree(indent + 1)
         return result
 
     @addToClass(AST.UnExpr)

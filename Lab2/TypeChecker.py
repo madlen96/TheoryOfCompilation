@@ -47,11 +47,11 @@ class TypeChecker(NodeVisitor):
         type2 = self.visit(node.right)  # type2 = node.right.accept(self)
         op = node.op
         if type1 is None or type2 is None:
-            print "Undeclare variable in line:{0}".format(node.line)
+            print "Undeclare variable in line: {0}".format(node.line)
         else:
             op_type = types_dict[(op, type1, type2)]
             if op_type is None:
-                print "Invalid types in binary expression in line:{0}".format(node.line)
+                print "Invalid types in binary expression in line: {0}".format(node.line)
             return op_type
         return None
 
@@ -102,7 +102,7 @@ class TypeChecker(NodeVisitor):
             if count_elem_in_row == 0:
                 count_elem_in_row = self.visit(row)
             elif len(self.visit(row)) != count_elem_in_row:
-                print('Diffrent size')
+                print("Different size in line {0}".format(node.line))
                 # TODO fix name
         return count_rows, count_elem_in_row
 
@@ -140,7 +140,7 @@ class TypeChecker(NodeVisitor):
         self.visit(node.expr)
 
     def visit_AssignmentWithRows(self, node):
-        if self.table.get(node.name) is None:
+        if self.table.get(node.id) is None:
             #     TODO dodawac do innej mapy?
             size = self.visit(node.expr)
             self.table.put(node.id, size)

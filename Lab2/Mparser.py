@@ -212,7 +212,7 @@ def p_array_expression(p):
                     | expression DOTMINUS expression
                     | expression DOTTIMES expression
                     | expression DOTDIVIDE expression """
-    p[0] = AST.BinExpr(p[2], p[1], p[3],p.lineno(1))
+    p[0] = AST.BinExpr(p[2], p[1], p[3], p.lineno(1))
 
 
 def p_array(p):

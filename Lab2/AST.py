@@ -1,5 +1,8 @@
 class Node(object):
     pass
+    #
+    # def accept(self, visitor):
+    #     return visitor.visit(self)
 
 
 class Const(Node):
@@ -99,6 +102,7 @@ class Instructions(Node):
         self.instructions = []
         self.line = line
 
+
 # z zerowa liczba elementow
 # albo np 10 albo zaden element
 class InstructionsOpt(Node):
@@ -112,8 +116,9 @@ class InstructionBlock(Node):
         self.instructions = instructions
         self.line = line
 
+
 class IfElseInstruction(Node):
-    def __init__(self, cond, instruction, line, else_=None,):
+    def __init__(self, cond, instruction, line, else_=None, ):
         self.cond = cond
         self.instruction = instruction
         self.else_ = else_
@@ -133,6 +138,7 @@ class ForInstruction(Node):
         self.range = range
         self.instruction_block = instruction_block
         self.line = line
+
 
 class Range(Node):
     def __init__(self, from_, to, line):
@@ -168,10 +174,12 @@ class EyeInit(Node):
         self.size = expression
         self.line = line
 
+
 class OnesInit(Node):
     def __init__(self, expression, line):
         self.size = expression
         self.line = line
+
 
 class ZerosInit(Node):
     def __init__(self, expression, line):
@@ -189,4 +197,3 @@ class UnExpr(Node):
 class Error(Node):
     def __init__(self):
         pass
-

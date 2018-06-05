@@ -1,9 +1,8 @@
 import sys
-import ply.yacc as yacc
 import scanner
 import Mparser
 import TypeChecker
-from TreePrinter import TreePrinter
+import Interpreter
 
 if __name__ == '__main__':
 
@@ -17,9 +16,13 @@ if __name__ == '__main__':
     parser = Mparser.parser
     text = file.read()
     ast = parser.parse(text, lexer=scanner.lexer)
-    result = ast.printTree()
-    print(result)
+    # result = ast.printTree()
+    # print(result)
 
     typeChecker = TypeChecker.TypeChecker()
     typeChecker.visit(ast)
-
+    ast.accept(Interpreter())
+    # in future
+    # ast.accept(OptimizationPass1())
+    # ast.accept(OptimizationPass2())
+    # ast.accept(CodeGenerator())

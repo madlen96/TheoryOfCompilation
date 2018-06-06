@@ -68,7 +68,10 @@ class Interpreter(object):
 
     @when(AST.Values)
     def visit(self, node):
-        return node.values
+        result_values = []
+        for value in node.values:
+            result_values.append(value.accept(self))
+        return result_values
 
     @when(AST.ValueArray)
     def visit(self, node):
@@ -103,7 +106,8 @@ class Interpreter(object):
 
     @when(AST.PrintInstruction)
     def visit(self, node):
-        print(node.to_print.accept(self))
+        for elem in node.to_print.accept(self):
+            print(elem)
 
     @when(AST.Instructions)
     def visit(self, node):

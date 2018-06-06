@@ -78,7 +78,6 @@ class Interpreter(object):
         pass
         # TODO
 
-
     @when(AST.InstructionsOpt)
     def visit(self, node):
         node.instructions.accept(self)
@@ -172,7 +171,6 @@ class Interpreter(object):
 
     @when(AST.Assignment)
     def visit(self, node):
-        # name = node.name.accept(self)
         expr = node.expr.accept(self)
         value = BIN_OP[node.op](self.memory_stack.get(node.name), expr)
         if node.op == '=':
@@ -183,18 +181,16 @@ class Interpreter(object):
 
     @when(AST.AssignmentWithArray)
     def visit(self, node):
-        name = node.array.accept(self)
         expr = node.expr.accept(self)
-        value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+        value = BIN_OP[node.op](self.memory_stack.get(node.array), expr)
         if node.op == '=':
-            self.memory_stack.insert(name, value)
+            self.memory_stack.insert(node.array, value)
         else:
-            self.memory_stack.set(name, value)
+            self.memory_stack.set(node.array, value)
         return value
 
     @when(AST.AssignmentWithRows)
     def visit(self, node):
-        # name = node.id.accept(self)
         expr = node.expr.accept(self)
         value = BIN_OP[node.op](self.memory_stack.get(node.id), expr)
         if node.op == '=':

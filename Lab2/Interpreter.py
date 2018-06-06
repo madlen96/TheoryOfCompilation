@@ -3,6 +3,7 @@ from Memory import *
 from Exceptions import *
 from visit import *
 import sys
+import numpy as np
 
 sys.setrecursionlimit(10000)
 
@@ -11,11 +12,21 @@ BIN_OP = {
     '-': lambda a, b: a - b,
     '*': lambda a, b: a * b,
     '/': lambda a, b: a / b,
+    '.+': lambda a, b: np.add(a, b),
+    '.-': lambda a, b: np.subtract(a, b),
+    '.*': lambda a, b: np.multiply(a, b),
+    './': lambda a, b: np.divide(a, b),
     '=': lambda a, b: b,
     '+=': lambda a, b: a + b,
     '-=': lambda a, b: a - b,
     '*=': lambda a, b: a * b,
     '/=': lambda a, b: a / b,
+    '<': lambda a, b: a < b,
+    '>': lambda a, b: a > b,
+    '==': lambda a, b: a == b,
+    '!=': lambda a, b: a != b,
+    '<=': lambda a, b: a <= b,
+    '>=': lambda a, b: a >= b,
 }
 
 
@@ -156,8 +167,10 @@ class Interpreter(object):
 
     @when(AST.UnExpr)
     def visit(self, node):
-        pass
-        # TODO
+        if node.operator == "-":
+            return - node.expression.accept(self)
+        else:
+            return np.transpose(node.expression.accept(self))
 
     @when(AST.Assignment)
     def visit(self, node):
@@ -182,15 +195,12 @@ class Interpreter(object):
 
     @when(AST.EyeInit)
     def visit(self, node):
-        pass
-        # TODO
+        return np.eye(node.size.accept(self))
 
     @when(AST.OnesInit)
     def visit(self, node):
-        pass
-        # TODO
+        return np.ones(node.size.accept(self))
 
     @when(AST.ZerosInit)
     def visit(self, node):
-        pass
-        # TODO
+        return np.zeros(node.size.accept(self))

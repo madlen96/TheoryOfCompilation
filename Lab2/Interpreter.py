@@ -74,20 +74,15 @@ class Interpreter(object):
     def visit(self, node):
         array = self.memory_stack.get(node.name)
         list_of_index = node.index.accept(self)
-
-        pass
-        # TODO
-
+        return array, list_of_index
 
     @when(AST.InstructionsOpt)
     def visit(self, node):
         node.instructions.accept(self)
 
-
     @when(AST.InstructionBlock)
     def visit(self, node):
         node.instructions.accept(self)
-
 
     @when(AST.Program)
     def visit(self, node):
@@ -183,13 +178,21 @@ class Interpreter(object):
 
     @when(AST.AssignmentWithArray)
     def visit(self, node):
-        name = node.array.accept(self)
+        name, indices = node.array.accept(self)
+        array = self.memory_stack.get(name)
+
         expr = node.expr.accept(self)
         value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+
+        sub_array = array
+        for index in indices[:-1]:
+            sub_array = sub_array[index]
+        sub_array[indices[-1]] = value
+
         if node.op == '=':
-            self.memory_stack.insert(name, value)
+            self.memory_stack.insert(name, array)
         else:
-            self.memory_stack.set(name, value)
+            self.memory_stack.set(name, array)
         return value
 
     @when(AST.AssignmentWithRows)

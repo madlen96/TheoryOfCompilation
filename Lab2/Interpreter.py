@@ -41,16 +41,16 @@ class Interpreter(object):
 
     @when(AST.Array)
     def visit(self, node):
-        pass
-        # TODO
+        return node.values
 
     @when(AST.Values)
     def visit(self, node):
-        pass
-        # TODO
+        return node.values
 
     @when(AST.ValueArray)
     def visit(self, node):
+        # node.index
+        # self.memory_stack.get(node.name)
         pass
         # TODO
 
@@ -128,6 +128,9 @@ class Interpreter(object):
 
     @when(AST.IfElseInstruction)
     def visit(self, node):
+        cond = node.cond.accept(self)
+        instruction = node.instruction.accept(self)
+        else_ = node.else_.accept(self)
         pass
         # TODO
 

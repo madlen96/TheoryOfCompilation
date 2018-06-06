@@ -6,6 +6,18 @@ import sys
 
 sys.setrecursionlimit(10000)
 
+BIN_OP = {
+    '+': lambda a, b: a + b,
+    '-': lambda a, b: a - b,
+    '*': lambda a, b: a * b,
+    '/': lambda a, b: a / b,
+    '=': lambda a, b: b,
+    '+=': lambda a, b: a + b,
+    '-=': lambda a, b: a - b,
+    '*=': lambda a, b: a * b,
+    '/=': lambda a, b: a / b,
+}
+
 
 class Interpreter(object):
     def __init__(self):
@@ -49,8 +61,9 @@ class Interpreter(object):
 
     @when(AST.ValueArray)
     def visit(self, node):
-        # node.index
-        # self.memory_stack.get(node.name)
+        array = self.memory_stack.get(node.name)
+        list_of_index = node.index.accept(self)
+
         pass
         # TODO
 
@@ -128,21 +141,18 @@ class Interpreter(object):
 
     @when(AST.IfElseInstruction)
     def visit(self, node):
-        cond = node.cond.accept(self)
-        instruction = node.instruction.accept(self)
-        else_ = node.else_.accept(self)
-        pass
-        # TODO
+        r = None
+        if node.cond.accept(self):
+            r = node.instruction.accept(self)
+        elif node.else_ is not None:
+            r = node.else_.accept(self)
+        return r
 
     @when(AST.BinExpr)
     def visit(self, node):
         r1 = node.left.accept(self)
         r2 = node.right.accept(self)
-        # try sth smarter than:
-        # if(node.op=='+') return r1+r2
-        # elsif(node.op=='-') ...
-        # but do not use python eval
-        # TODO
+        return BIN_OP[node.op](r1, r2)
 
     @when(AST.UnExpr)
     def visit(self, node):
@@ -151,8 +161,14 @@ class Interpreter(object):
 
     @when(AST.Assignment)
     def visit(self, node):
-        pass
-        # TODO
+        name = node.name.accept(self)
+        expr = node.name.accept(self)
+        value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+        if node.op == '=':
+            self.memory_stack.insert(name, value)
+        else:
+            self.memory_stack.set(name, value)
+        return value
 
     @when(AST.AssignmentWithArray)
     def visit(self, node):

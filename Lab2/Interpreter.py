@@ -172,13 +172,13 @@ class Interpreter(object):
 
     @when(AST.Assignment)
     def visit(self, node):
-        name = node.name.accept(self)
+        # name = node.name.accept(self)
         expr = node.expr.accept(self)
-        value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+        value = BIN_OP[node.op](self.memory_stack.get(node.name), expr)
         if node.op == '=':
-            self.memory_stack.insert(name, value)
+            self.memory_stack.insert(node.name, value)
         else:
-            self.memory_stack.set(name, value)
+            self.memory_stack.set(node.name, value)
         return value
 
     @when(AST.AssignmentWithArray)
@@ -194,13 +194,13 @@ class Interpreter(object):
 
     @when(AST.AssignmentWithRows)
     def visit(self, node):
-        name = node.id.accept(self)
+        # name = node.id.accept(self)
         expr = node.expr.accept(self)
-        value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+        value = BIN_OP[node.op](self.memory_stack.get(node.id), expr)
         if node.op == '=':
-            self.memory_stack.insert(name, value)
+            self.memory_stack.insert(node.id, value)
         else:
-            self.memory_stack.set(name, value)
+            self.memory_stack.set(node.id, value)
         return value
 
     @when(AST.EyeInit)

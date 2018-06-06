@@ -79,21 +79,19 @@ class Interpreter(object):
         # TODO
 
 
-    # @when(AST.InstructionsOpt)
-    # def visit(self, node):
-    #     for instruction in node.instructions:
-    #         self.visit(instruction)
+    @when(AST.InstructionsOpt)
+    def visit(self, node):
+        node.instructions.accept(self)
 
-    #
-    # @when(AST.InstructionsBlock)
-    # def visit(self, node):
-    #     pass
-    #
+
+    @when(AST.InstructionBlock)
+    def visit(self, node):
+        node.instructions.accept(self)
+
 
     @when(AST.Program)
     def visit(self, node):
-        for instr in node.instructions_opt:
-            instr.accept(self)
+        node.instructions_opt.accept(self)
 
     @when(AST.ReturnInstruction)
     def visit(self, node):
@@ -110,7 +108,7 @@ class Interpreter(object):
 
     @when(AST.PrintInstruction)
     def visit(self, node):
-        return node.to_print.accept(self)
+        print(node.to_print.accept(self))
 
     @when(AST.Instructions)
     def visit(self, node):

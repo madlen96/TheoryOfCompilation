@@ -169,6 +169,8 @@ class TypeChecker(NodeVisitor):
         if from_ != 'int' or to != 'int':
             print "Not int in range instruction in line in line {0}".format(node.line)
 
+ #zliczanie ilosci petli
+
     def visit_BreakInstruction(self, node):
         tab = self.table
         while tab is not None and tab.name != 'while' and tab.name != 'for':

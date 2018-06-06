@@ -196,8 +196,14 @@ class Interpreter(object):
 
     @when(AST.AssignmentWithRows)
     def visit(self, node):
-        pass
-        # TODO
+        name = node.id.accept(self)
+        expr = node.expr.accept(self)
+        value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+        if node.op == '=':
+            self.memory_stack.insert(name, value)
+        else:
+            self.memory_stack.set(name, value)
+        return value
 
     @when(AST.EyeInit)
     def visit(self, node):

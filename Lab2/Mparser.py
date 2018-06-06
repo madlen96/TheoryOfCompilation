@@ -133,7 +133,7 @@ def p_assignment(p):
     elif len(p) == 7:
         p[0] = AST.AssignmentWithRows(p[2], p[1], p[4], p.lineno(1))
     elif len(p) == 8:
-        p[0] = AST.AssignmentWithArray(p[5], AST.ValueArray(p[1], p[3]), p[6], p.lineno(1))
+        p[0] = AST.AssignmentWithArray(p[5], AST.ValueArray(p[1], p[3], p.lineno(1)), p[6], p.lineno(1))
 
 
 def p_id_expression(p):

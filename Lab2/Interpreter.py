@@ -4,6 +4,7 @@ from Exceptions import *
 from visit import *
 import sys
 import numpy as np
+import operator
 
 sys.setrecursionlimit(10000)
 
@@ -29,6 +30,10 @@ BIN_OP = {
     '>=': lambda a, b: a >= b,
 }
 
+UN_OPS = {
+    "NEGATION": operator.neg,
+    "TRANSPOSE": np.transpose
+}
 
 class Interpreter(object):
     def __init__(self):
@@ -80,9 +85,11 @@ class Interpreter(object):
     def visit(self, node):
         node.instructions.accept(self)
 
+
     @when(AST.InstructionBlock)
     def visit(self, node):
         node.instructions.accept(self)
+
 
     @when(AST.Program)
     def visit(self, node):
@@ -160,10 +167,13 @@ class Interpreter(object):
 
     @when(AST.UnExpr)
     def visit(self, node):
-        if node.operator == "-":
-            return - node.expression.accept(self)
-        else:
-            return np.transpose(node.expression.accept(self))
+        # if node.operator == "-":
+        #     return - node.expression.accept(self)
+        # else:
+        #     return np.transpose(node.expression.accept(self))
+        r = node.expression.accept(self)
+        return UN_OPS[node.operator](r)
+
 
     @when(AST.Assignment)
     def visit(self, node):

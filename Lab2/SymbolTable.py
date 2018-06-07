@@ -42,7 +42,7 @@ class SymbolTable(object):
             return s
 
     def pushScope(self, name):
-        new_scope = SymbolTable(self, name)
+        new_scope = SymbolTable(self, name, False)
         self.symbols[name] = new_scope
         return new_scope
 
@@ -50,5 +50,5 @@ class SymbolTable(object):
         parent_scope = self.getParentScope()
         if parent_scope is None:
             print('Cannot pop scope')
-        parent_scope.pop(self.name)
+        parent_scope.get(self.name)
         return parent_scope

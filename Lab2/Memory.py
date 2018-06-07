@@ -34,7 +34,7 @@ class MemoryStack:
         i = range(0, len(self.stack))
         for index in i:
             if self.stack[index].has_key(name):
-                self.stack[index].put(name)
+                self.stack[index].put(name, value)
                 return True
         return False
 

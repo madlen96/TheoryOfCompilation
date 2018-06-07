@@ -19,16 +19,7 @@ if(N<10)
 else if(N<=15)
     print "N<=15";
 
-while(k>0) {
-    if(k<5)
-        i = 1;
-    else if(k<10)
-        i = 2;   
-    else
-        i = 3;
-    
-    k = k - 1;
-}
+
 
 
 for i = 1:N {
@@ -41,16 +32,22 @@ for i = 1:N {
 }
 
 
-
-
-
-
-
-
-
 for i = 1:N {
     for j = i:M {
         print i, j;
     }
+}
+
+
+k = 5;
+while(k>0) {
+    if(k<5)
+        i = 1;
+    else if(k<10)
+        i = 2;
+    else
+        i = 3;
+
+    k = k - 1;
 }
 

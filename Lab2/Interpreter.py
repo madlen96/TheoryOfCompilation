@@ -32,7 +32,7 @@ BIN_OP = {
 
 UN_OPS = {
     "-": operator.neg,
-    "TRANSPOSE": np.transpose
+    "'": np.transpose
 }
 
 
@@ -66,7 +66,10 @@ class Interpreter(object):
 
     @when(AST.Rows)
     def visit(self, node):
-        return node.values
+        list_of_values = []
+        for value in node.values:
+            list_of_values.append(value.accept(self))
+        return list_of_values
 
     @when(AST.Array)
     def visit(self, node):
@@ -126,10 +129,10 @@ class Interpreter(object):
 
     @when(AST.ForInstruction)
     def visit(self, node):
-        self.memory_stack.push(Memory(node.id))
+        self.memory_stack.push(Memory(node.variable))
         r = None
         for i in node.range.accept(self):
-            self.memory_stack.insert(node.variable.name, i)
+            self.memory_stack.insert(node.variable, i)
             try:
                 r = node.instruction_block.accept(self)
             except ContinueException:
@@ -142,7 +145,7 @@ class Interpreter(object):
     @when(AST.WhileInstruction)
     def visit(self, node):
         r = None
-        self.memory_stack.push(Memory(node.id))
+        # self.memory_stack.push(Memory(node.id))
         while node.cond.accept(self):
             try:
                 r = node.instr.accept(self)
@@ -191,10 +194,10 @@ class Interpreter(object):
     @when(AST.AssignmentWithArray)
     def visit(self, node):
         name, indices = node.array.accept(self)
-        array = self.memory_stack.get(name)
+        array = self.memory_stack.get(node.array.name)
 
         expr = node.expr.accept(self)
-        value = BIN_OP[node.op](self.memory_stack.get(name), expr)
+        value = BIN_OP[node.op](self.memory_stack.get(node.array.name), expr)
 
         sub_array = array
         for index in indices[:-1]:
@@ -202,9 +205,9 @@ class Interpreter(object):
         sub_array[indices[-1]] = value
 
         if node.op == '=':
-            self.memory_stack.insert(name, array)
+            self.memory_stack.insert(node.array.name, array)
         else:
-            self.memory_stack.set(name, array)
+            self.memory_stack.set(node.array.name, array)
         return value
 
     @when(AST.AssignmentWithRows)

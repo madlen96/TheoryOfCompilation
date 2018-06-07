@@ -69,7 +69,7 @@ def p_if_else_instruction(p):
     """if_else_instruction : IF '(' expression_to_bool ')' instructions %prec IFX
                             | IF '(' expression_to_bool ')' instructions ELSE instructions"""
     if len(p) == 6:
-        p[0] = AST.IfElseInstruction(p[3], p[5],p.lineno(1))
+        p[0] = AST.IfElseInstruction(p[3], p[5], p.lineno(1))
     elif len(p) == 8:
         p[0] = AST.IfElseInstruction(p[3], p[5], p.lineno(1), p[7])
 

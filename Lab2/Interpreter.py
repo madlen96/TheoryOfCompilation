@@ -31,9 +31,10 @@ BIN_OP = {
 }
 
 UN_OPS = {
-    "NEGATION": operator.neg,
+    "-": operator.neg,
     "TRANSPOSE": np.transpose
 }
+
 
 class Interpreter(object):
     def __init__(self):
@@ -88,11 +89,9 @@ class Interpreter(object):
     def visit(self, node):
         node.instructions.accept(self)
 
-
     @when(AST.InstructionBlock)
     def visit(self, node):
         node.instructions.accept(self)
-
 
     @when(AST.Program)
     def visit(self, node):
@@ -177,7 +176,6 @@ class Interpreter(object):
         #     return np.transpose(node.expression.accept(self))
         r = node.expression.accept(self)
         return UN_OPS[node.operator](r)
-
 
     @when(AST.Assignment)
     def visit(self, node):
